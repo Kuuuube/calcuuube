@@ -1,8 +1,8 @@
 #![windows_subsystem = "windows"]
 
+mod gui;
 mod preprocessor;
 mod tests;
-mod gui;
 
 fn main() -> eframe::Result<()> {
     env_logger::init();

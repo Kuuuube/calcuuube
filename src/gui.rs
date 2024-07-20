@@ -7,9 +7,7 @@ pub struct CalcuuubeGuiSettings {
 
 impl Default for CalcuuubeGuiSettings {
     fn default() -> Self {
-        Self {
-            dark_mode: true,
-        }
+        Self { dark_mode: true }
     }
 }
 
