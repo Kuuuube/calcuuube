@@ -147,8 +147,8 @@ impl eframe::App for CalcuuubeGui {
                         ui.end_row();
                         make_button(self, ui, "0");
                         make_button(self, ui, ".");
-                        make_backspace_button(self, ui);
-                        make_equals_button(self, ui);
+                        make_button(self, ui, "<-");
+                        make_button(self, ui, "=");
                         ui.end_row();
                     });
             });
@@ -164,32 +164,13 @@ fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &
 
     if calcuuube_gui.clicked && new_button.is_pointer_button_down_on() {
         calcuuube_gui.clicked = false;
-        calcuuube_gui.input_text += operation;
-        calculate_result(calcuuube_gui);
-    }
-}
-
-fn make_backspace_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
-    let new_button = ui.add_sized(
-        ui.available_size(),
-        egui::Button::new(egui::RichText::new("<-")),
-    );
-
-    if calcuuube_gui.clicked && new_button.is_pointer_button_down_on() {
-        calcuuube_gui.clicked = false;
-        calcuuube_gui.input_text.pop();
-        calculate_result(calcuuube_gui);
-    }
-}
-
-fn make_equals_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
-    let new_button = ui.add_sized(
-        ui.available_size(),
-        egui::Button::new(egui::RichText::new("=")),
-    );
-
-    if calcuuube_gui.clicked && new_button.is_pointer_button_down_on() {
-        calcuuube_gui.clicked = false;
+        match operation {
+            "C" => { calcuuube_gui.input_text = Default::default(); }
+            "x²" => { calcuuube_gui.input_text += "^2"; }
+            "<-" => { calcuuube_gui.input_text.pop(); },
+            "=" => {},
+            _ => { calcuuube_gui.input_text += operation; }
+        }
         calculate_result(calcuuube_gui);
     }
 }
