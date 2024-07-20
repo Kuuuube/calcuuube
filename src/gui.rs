@@ -20,6 +20,8 @@ pub struct CalcuuubeGui {
     result_text: String,
     #[serde(skip)]
     clicked: bool,
+    #[serde(skip)]
+    parser_context: kalk::parser::Context,
 }
 
 impl Default for CalcuuubeGui {
@@ -30,6 +32,7 @@ impl Default for CalcuuubeGui {
             input_text: "".to_owned(),
             result_text: "".to_owned(),
             clicked: false,
+            parser_context: kalk::parser::Context::new(),
         }
     }
 }
@@ -82,13 +85,27 @@ impl eframe::App for CalcuuubeGui {
 
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.vertical(|ui| {
-                ui.add(
+                let input_textedit = ui.add(
                     egui::TextEdit::singleline(&mut self.input_text)
-                        .min_size([0.0, 90.0].into())
+                        .min_size([0.0, 40.0].into())
                         .horizontal_align(egui::Align::Max)
                         .font(egui::TextStyle::Heading)
                         .id("calcuuube_textedit".into()),
                 );
+
+                if input_textedit.changed() {
+                    let calculation = crate::calculate::calculate_string_to_string(&self.input_text, &mut self.parser_context);
+                    println!("{:?}", calculation);
+                    if calculation.is_some() {
+                        self.result_text = calculation.unwrap();
+                    }
+                }
+
+                ui.with_layout(egui::Layout::top_down(egui::Align::RIGHT), |ui| {
+                    ui.add(egui::Label::new(
+                        egui::RichText::new(&self.result_text).size(40.0),
+                    ))
+                });
 
                 capture_events(self, ui);
 

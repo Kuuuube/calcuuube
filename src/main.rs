@@ -1,5 +1,6 @@
 #![windows_subsystem = "windows"]
 
+mod calculate;
 mod gui;
 mod preprocessor;
 mod tests;
@@ -24,15 +25,3 @@ fn main() -> eframe::Result<()> {
         Box::new(|cc| Ok(Box::new(gui::CalcuuubeGui::new(cc)))),
     )
 }
-
-// use kalk::parser;
-
-// mod preprocessor;
-// mod tests;
-
-// fn main() {
-//     let mut parser_context = parser::Context::new();
-//     let precision = 53;
-//     let result = parser::eval(&mut parser_context, &preprocessor::preprocessor("√2+2"), precision).unwrap().unwrap();
-//     println!("{:?}", result.to_f64());
-// }
