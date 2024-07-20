@@ -12,7 +12,6 @@ impl Default for CalcuuubeGuiSettings {
 #[derive(serde::Deserialize, serde::Serialize)]
 #[serde(default)]
 pub struct CalcuuubeGui {
-    text: String,
     settings: CalcuuubeGuiSettings,
 
     #[serde(skip)]
@@ -26,7 +25,6 @@ pub struct CalcuuubeGui {
 impl Default for CalcuuubeGui {
     fn default() -> Self {
         Self {
-            text: "".to_owned(),
             settings: CalcuuubeGuiSettings::default(),
 
             input_text: "".to_owned(),
@@ -85,7 +83,7 @@ impl eframe::App for CalcuuubeGui {
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.vertical(|ui| {
                 ui.add(
-                    egui::TextEdit::singleline(&mut self.text)
+                    egui::TextEdit::singleline(&mut self.input_text)
                     .min_size([0.0, 90.0].into())
                     .horizontal_align(egui::Align::Max)
                     .font(egui::TextStyle::Heading)
@@ -153,6 +151,7 @@ fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &
 
     if calcuuube_gui.clicked && new_button.is_pointer_button_down_on() {
         calcuuube_gui.clicked = false;
+        calcuuube_gui.input_text += operation;
         println!("{}", operation);
     }
 }
