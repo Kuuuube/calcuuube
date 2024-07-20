@@ -165,11 +165,19 @@ fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &
     if calcuuube_gui.clicked && new_button.is_pointer_button_down_on() {
         calcuuube_gui.clicked = false;
         match operation {
-            "C" => { calcuuube_gui.input_text = Default::default(); }
-            "x²" => { calcuuube_gui.input_text += "^2"; }
-            "<-" => { calcuuube_gui.input_text.pop(); },
-            "=" => {},
-            _ => { calcuuube_gui.input_text += operation; }
+            "C" => {
+                calcuuube_gui.input_text = Default::default();
+            }
+            "x²" => {
+                calcuuube_gui.input_text += "^2";
+            }
+            "<-" => {
+                calcuuube_gui.input_text.pop();
+            }
+            "=" => {}
+            _ => {
+                calcuuube_gui.input_text += operation;
+            }
         }
         calculate_result(calcuuube_gui);
     }
