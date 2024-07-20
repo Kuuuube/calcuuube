@@ -1,5 +1,3 @@
-use egui::reset_button;
-
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
 pub struct CalcuuubeGuiSettings {
     pub dark_mode: bool,
@@ -18,9 +16,9 @@ pub struct CalcuuubeGui {
     settings: CalcuuubeGuiSettings,
 
     #[serde(skip)]
-    ime_text: String,
+    input_text: String,
     #[serde(skip)]
-    blocked_keys: Vec<String>,
+    result_text: String,
 }
 
 impl Default for CalcuuubeGui {
@@ -29,8 +27,8 @@ impl Default for CalcuuubeGui {
             text: "".to_owned(),
             settings: CalcuuubeGuiSettings::default(),
 
-            ime_text: "".to_owned(),
-            blocked_keys: vec![],
+            input_text: "".to_owned(),
+            result_text: "".to_owned(),
         }
     }
 }
