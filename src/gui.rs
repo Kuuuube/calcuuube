@@ -84,10 +84,10 @@ impl eframe::App for CalcuuubeGui {
             ui.vertical(|ui| {
                 ui.add(
                     egui::TextEdit::singleline(&mut self.input_text)
-                    .min_size([0.0, 90.0].into())
-                    .horizontal_align(egui::Align::Max)
-                    .font(egui::TextStyle::Heading)
-                    .id("calcuuube_textedit".into()),
+                        .min_size([0.0, 90.0].into())
+                        .horizontal_align(egui::Align::Max)
+                        .font(egui::TextStyle::Heading)
+                        .id("calcuuube_textedit".into()),
                 );
 
                 capture_events(self, ui);
@@ -196,19 +196,21 @@ fn set_theme(ctx: &egui::Context, dark_mode: bool) {
     }
 }
 
-fn capture_events(
-    calcuuube_gui: &mut CalcuuubeGui,
-    ui: &mut egui::Ui,
-) {
+fn capture_events(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
     ui.input_mut(|i| {
         for event in &i.events {
             match event {
-                egui::Event::Text(_) => {},
-                egui::Event::PointerButton{pos: _, button, pressed, modifiers: _} => {
+                egui::Event::Text(_) => {}
+                egui::Event::PointerButton {
+                    pos: _,
+                    button,
+                    pressed,
+                    modifiers: _,
+                } => {
                     if button == &egui::PointerButton::Primary && *pressed {
                         calcuuube_gui.clicked = true;
                     }
-                },
+                }
                 _ => {}
             }
         }
