@@ -90,7 +90,7 @@ impl eframe::App for CalcuuubeGui {
                     .id("calcuuube_textedit".into()),
                 );
 
-                filter_events_and_replace(self, ui);
+                capture_events(self, ui);
 
                 let grid_column_count = 4;
                 let grid_row_count = 6;
@@ -196,7 +196,7 @@ fn set_theme(ctx: &egui::Context, dark_mode: bool) {
     }
 }
 
-fn filter_events_and_replace(
+fn capture_events(
     calcuuube_gui: &mut CalcuuubeGui,
     ui: &mut egui::Ui,
 ) {
@@ -204,8 +204,7 @@ fn filter_events_and_replace(
         for event in &i.events {
             match event {
                 egui::Event::Text(_) => {},
-                egui::Event::PointerButton{pos, button, pressed, modifiers} => {
-                    // println!("{} {:?} {} {:?}", pos, button, pressed, modifiers);
+                egui::Event::PointerButton{pos: _, button, pressed, modifiers: _} => {
                     if button == &egui::PointerButton::Primary && *pressed {
                         calcuuube_gui.clicked = true;
                     }
