@@ -1,0 +1,11 @@
+[package]
+name = "calcuuube"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kalk = "3.2.0"
+egui = "0.28.1"
+eframe = { version = "0.28.1", features = [ "default_fonts", "glow", "persistence" ] }
+env_logger = "0.11.3"
+serde = "1.0.203"
