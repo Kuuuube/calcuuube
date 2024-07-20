@@ -94,11 +94,7 @@ impl eframe::App for CalcuuubeGui {
                 );
 
                 if input_textedit.changed() {
-                    let calculation = crate::calculate::calculate_string_to_string(&self.input_text, &mut self.parser_context);
-                    println!("{:?}", calculation);
-                    if calculation.is_some() {
-                        self.result_text = calculation.unwrap();
-                    }
+                    calculate_result(self);
                 }
 
                 ui.with_layout(egui::Layout::top_down(egui::Align::RIGHT), |ui| {
@@ -169,7 +165,7 @@ fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &
     if calcuuube_gui.clicked && new_button.is_pointer_button_down_on() {
         calcuuube_gui.clicked = false;
         calcuuube_gui.input_text += operation;
-        println!("{}", operation);
+        calculate_result(calcuuube_gui);
     }
 }
 
@@ -182,6 +178,17 @@ fn make_backspace_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
     if calcuuube_gui.clicked && new_button.is_pointer_button_down_on() {
         calcuuube_gui.clicked = false;
         calcuuube_gui.input_text.pop();
+        calculate_result(calcuuube_gui);
+    }
+}
+
+fn calculate_result(calcuuube_gui: &mut CalcuuubeGui) {
+    let calculation = crate::calculate::calculate_string_to_string(
+        &calcuuube_gui.input_text,
+        &mut calcuuube_gui.parser_context,
+    );
+    if calculation.is_some() {
+        calcuuube_gui.result_text = calculation.unwrap();
     }
 }
 
