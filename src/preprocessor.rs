@@ -29,5 +29,8 @@ fn inject_sqrt_parentheses(equation: &str) -> String {
         }
         i += 1;
     }
+    if found_sqrt {
+        new_equation_chars.push(')');
+    }
     return new_equation_chars.into_iter().collect();
 }
