@@ -19,6 +19,8 @@ pub struct CalcuuubeGui {
     input_text: String,
     #[serde(skip)]
     result_text: String,
+    #[serde(skip)]
+    clicked: bool,
 }
 
 impl Default for CalcuuubeGui {
@@ -29,6 +31,7 @@ impl Default for CalcuuubeGui {
 
             input_text: "".to_owned(),
             result_text: "".to_owned(),
+            clicked: false,
         }
     }
 }
@@ -80,63 +83,76 @@ impl eframe::App for CalcuuubeGui {
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            let grid_column_count = 4;
-            let grid_row_count = 6;
-            egui::Grid::new("main_ui_grid")
-                .num_columns(grid_column_count)
-                .min_col_width(
-                    (ui.available_width()
-                        - ui.spacing().item_spacing.x * (grid_column_count as f32 - 1.0))
-                        / grid_column_count as f32,
-                )
-                .min_row_height(
-                    (ui.available_height()
-                        - ui.spacing().item_spacing.y * (grid_row_count as f32 - 1.0))
-                        / grid_row_count as f32,
-                )
-                .show(ui, |ui| {
-                    make_button(ui, "√");
-                    make_button(ui, "");
-                    make_button(ui, "^");
-                    make_button(ui, "x²");
-                    ui.end_row();
-                    make_button(ui, "C");
-                    make_button(ui, "(");
-                    make_button(ui, ")");
-                    make_button(ui, "÷");
-                    ui.end_row();
-                    make_button(ui, "7");
-                    make_button(ui, "8");
-                    make_button(ui, "9");
-                    make_button(ui, "x");
-                    ui.end_row();
-                    make_button(ui, "4");
-                    make_button(ui, "5");
-                    make_button(ui, "6");
-                    make_button(ui, "-");
-                    ui.end_row();
-                    make_button(ui, "1");
-                    make_button(ui, "2");
-                    make_button(ui, "3");
-                    make_button(ui, "+");
-                    ui.end_row();
-                    make_button(ui, "0");
-                    make_button(ui, ".");
-                    make_button(ui, "<-");
-                    make_button(ui, "=");
-                    ui.end_row();
-                });
+            ui.vertical(|ui| {
+                ui.add(
+                    egui::TextEdit::singleline(&mut self.text)
+                    .min_size([0.0, 90.0].into())
+                    .horizontal_align(egui::Align::Max)
+                    .font(egui::TextStyle::Heading)
+                    .id("calcuuube_textedit".into()),
+                );
+
+                filter_events_and_replace(self, ui);
+
+                let grid_column_count = 4;
+                let grid_row_count = 6;
+                egui::Grid::new("main_ui_grid")
+                    .num_columns(grid_column_count)
+                    .min_col_width(
+                        (ui.available_width()
+                            - ui.spacing().item_spacing.x * (grid_column_count as f32 - 1.0))
+                            / grid_column_count as f32,
+                    )
+                    .min_row_height(
+                        (ui.available_height()
+                            - ui.spacing().item_spacing.y * (grid_row_count as f32 - 1.0))
+                            / grid_row_count as f32,
+                    )
+                    .show(ui, |ui| {
+                        make_button(self, ui, "√");
+                        make_button(self, ui, "");
+                        make_button(self, ui, "^");
+                        make_button(self, ui, "x²");
+                        ui.end_row();
+                        make_button(self, ui, "C");
+                        make_button(self, ui, "(");
+                        make_button(self, ui, ")");
+                        make_button(self, ui, "÷");
+                        ui.end_row();
+                        make_button(self, ui, "7");
+                        make_button(self, ui, "8");
+                        make_button(self, ui, "9");
+                        make_button(self, ui, "*");
+                        ui.end_row();
+                        make_button(self, ui, "4");
+                        make_button(self, ui, "5");
+                        make_button(self, ui, "6");
+                        make_button(self, ui, "-");
+                        ui.end_row();
+                        make_button(self, ui, "1");
+                        make_button(self, ui, "2");
+                        make_button(self, ui, "3");
+                        make_button(self, ui, "+");
+                        ui.end_row();
+                        make_button(self, ui, "0");
+                        make_button(self, ui, ".");
+                        make_button(self, ui, "<-");
+                        make_button(self, ui, "=");
+                        ui.end_row();
+                    });
+            });
         });
     }
 }
 
-fn make_button(ui: &mut egui::Ui, operation: &str) {
+fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &str) {
     let new_button = ui.add_sized(
         ui.available_size(),
         egui::Button::new(egui::RichText::new(operation)),
     );
 
-    if new_button.clicked() {
+    if calcuuube_gui.clicked && new_button.is_pointer_button_down_on() {
+        calcuuube_gui.clicked = false;
         println!("{}", operation);
     }
 }
@@ -167,4 +183,24 @@ fn set_theme(ctx: &egui::Context, dark_mode: bool) {
     } else {
         ctx.set_visuals(egui::Visuals::light());
     }
+}
+
+fn filter_events_and_replace(
+    calcuuube_gui: &mut CalcuuubeGui,
+    ui: &mut egui::Ui,
+) {
+    ui.input_mut(|i| {
+        for event in &i.events {
+            match event {
+                egui::Event::Text(_) => {},
+                egui::Event::PointerButton{pos, button, pressed, modifiers} => {
+                    // println!("{} {:?} {} {:?}", pos, button, pressed, modifiers);
+                    if button == &egui::PointerButton::Primary && *pressed {
+                        calcuuube_gui.clicked = true;
+                    }
+                },
+                _ => {}
+            }
+        }
+    });
 }
