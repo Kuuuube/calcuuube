@@ -11,6 +11,7 @@ fn main() -> eframe::Result<()> {
         viewport: egui::ViewportBuilder::default()
             .with_inner_size([300.0, 450.0])
             .with_min_inner_size([300.0, 450.0])
+            .with_max_inner_size([300.0, 450.0])
             .with_icon(
                 eframe::icon_data::from_png_bytes(&include_bytes!("../assets/icon.png")[..])
                     .expect("Failed to load icon"),
