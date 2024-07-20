@@ -154,10 +154,10 @@ fn unselectable_warn_if_debug_build(ui: &mut egui::Ui) {
     }
 }
 
-fn light_dark_buttons(hentaigana_input_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
+fn light_dark_buttons(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
     let mut visuals = ui.ctx().style().visuals.clone();
     visuals.light_dark_radio_buttons(ui);
-    hentaigana_input_gui.settings.dark_mode = visuals.dark_mode;
+    calcuuube_gui.settings.dark_mode = visuals.dark_mode;
     set_theme(ui.ctx(), visuals.dark_mode);
 }
 

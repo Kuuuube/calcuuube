@@ -19,7 +19,7 @@ fn main() -> eframe::Result<()> {
         ..Default::default()
     };
     eframe::run_native(
-        "Hentaigana Input",
+        "Calcuuube",
         native_options,
         Box::new(|cc| Ok(Box::new(gui::CalcuuubeGui::new(cc)))),
     )
