@@ -19,5 +19,5 @@ pub fn calculate_string_to_string(
     if result.is_err() {
         return None;
     }
-    return Some(result.unwrap()?.to_string_big().replace(" ", ","));
+    return Some(result.unwrap()?.to_string_pretty());
 }
