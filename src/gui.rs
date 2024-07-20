@@ -82,8 +82,64 @@ impl eframe::App for CalcuuubeGui {
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
-            
+            let grid_column_count = 4;
+            let grid_row_count = 6;
+            egui::Grid::new("main_ui_grid")
+                .num_columns(grid_column_count)
+                .min_col_width(
+                    (ui.available_width()
+                        - ui.spacing().item_spacing.x * (grid_column_count as f32 - 1.0))
+                        / grid_column_count as f32,
+                )
+                .min_row_height(
+                    (ui.available_height()
+                        - ui.spacing().item_spacing.y * (grid_row_count as f32 - 1.0))
+                        / grid_row_count as f32,
+                )
+                .show(ui, |ui| {
+                    make_button(ui, "√");
+                    make_button(ui, "");
+                    make_button(ui, "^");
+                    make_button(ui, "x²");
+                    ui.end_row();
+                    make_button(ui, "C");
+                    make_button(ui, "(");
+                    make_button(ui, ")");
+                    make_button(ui, "÷");
+                    ui.end_row();
+                    make_button(ui, "7");
+                    make_button(ui, "8");
+                    make_button(ui, "9");
+                    make_button(ui, "x");
+                    ui.end_row();
+                    make_button(ui, "4");
+                    make_button(ui, "5");
+                    make_button(ui, "6");
+                    make_button(ui, "-");
+                    ui.end_row();
+                    make_button(ui, "1");
+                    make_button(ui, "2");
+                    make_button(ui, "3");
+                    make_button(ui, "+");
+                    ui.end_row();
+                    make_button(ui, "0");
+                    make_button(ui, ".");
+                    make_button(ui, "<-");
+                    make_button(ui, "=");
+                    ui.end_row();
+                });
         });
+    }
+}
+
+fn make_button(ui: &mut egui::Ui, operation: &str) {
+    let new_button = ui.add_sized(
+        ui.available_size(),
+        egui::Button::new(egui::RichText::new(operation)),
+    );
+
+    if new_button.clicked() {
+        println!("{}", operation);
     }
 }
 
