@@ -1,3 +1,5 @@
+use std::str::Chars;
+
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
 pub struct CalcuuubeGuiSettings {
     pub dark_mode: bool,
@@ -17,6 +19,8 @@ pub struct CalcuuubeGui {
     #[serde(skip)]
     input_text: String,
     #[serde(skip)]
+    input_text_cursor_position: usize,
+    #[serde(skip)]
     result_text: String,
     #[serde(skip)]
     clicked: bool,
@@ -30,6 +34,7 @@ impl Default for CalcuuubeGui {
             settings: CalcuuubeGuiSettings::default(),
 
             input_text: "".to_owned(),
+            input_text_cursor_position: 0,
             result_text: "".to_owned(),
             clicked: false,
             parser_context: kalk::parser::Context::new(),
@@ -100,29 +105,49 @@ impl eframe::App for CalcuuubeGui {
                                 size: 35.0,
                                 family: egui::FontFamily::Monospace,
                             };
-                            let input_textedit = ui.add(
+                            let input_textedit =
                                 egui::TextEdit::singleline(&mut self.input_text)
                                     .min_size([0.0, 40.0].into())
                                     .horizontal_align(egui::Align::Max)
                                     .font(font)
                                     .id("calcuuube_textedit".into())
-                                    .vertical_align(egui::Align::Center),
-                            );
+                                    .vertical_align(egui::Align::Center)
+                                    .show(ui);
 
-                        if input_textedit.changed() {
-                            calculate_result(self);
-                        }
-                    });
+                            if input_textedit.response.changed() {
+                                calculate_result(self);
+                            }
 
-                    strip.cell(|ui| {
-                        ui.with_layout(egui::Layout::top_down(egui::Align::RIGHT), |ui| {
-                            let font_size = find_fit_text(ui, &self.result_text, egui::FontFamily::Monospace, 35, ui.available_width());
-                            ui.add(egui::Label::new(
-                                egui::RichText::new(&self.result_text).font(egui::FontId { size: font_size, family: egui::FontFamily::Monospace }),
-                            ).wrap_mode(egui::TextWrapMode::Truncate));
+                            match input_textedit.cursor_range {
+                                Some(some) => {
+                                    self.input_text_cursor_position =
+                                        some.primary.ccursor.index;
+                                }
+                                None => (),
+                            }
+                        });
+
+                        strip.cell(|ui| {
+                            ui.with_layout(egui::Layout::top_down(egui::Align::RIGHT), |ui| {
+                                let font_size = find_fit_text(
+                                    ui,
+                                    &self.result_text,
+                                    egui::FontFamily::Monospace,
+                                    35,
+                                    ui.available_width(),
+                                );
+                                ui.add(
+                                    egui::Label::new(egui::RichText::new(&self.result_text).font(
+                                        egui::FontId {
+                                            size: font_size,
+                                            family: egui::FontFamily::Monospace,
+                                        },
+                                    ))
+                                    .wrap_mode(egui::TextWrapMode::Truncate),
+                                );
+                            });
                         });
                     });
-                });
 
                 capture_events(self, ui);
 
@@ -188,16 +213,31 @@ fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &
         match operation {
             "C" => {
                 calcuuube_gui.input_text = Default::default();
-            }
-            "x²" => {
-                calcuuube_gui.input_text += "^2";
+                calcuuube_gui.input_text_cursor_position = Default::default();
             }
             "<-" => {
-                calcuuube_gui.input_text.pop();
+                let mut chars_vec: Vec<char> = calcuuube_gui.input_text.chars().collect();
+                if calcuuube_gui.input_text_cursor_position > 0 {
+                    let removal_position = calcuuube_gui.input_text_cursor_position - 1;
+                    if chars_vec.len() > 0 && removal_position < chars_vec.len() {
+                        chars_vec.remove(removal_position);
+                        calcuuube_gui.input_text_cursor_position -= 1;
+                        calcuuube_gui.input_text = chars_vec.into_iter().collect();
+                    }
+                }
             }
             "=" => {}
             _ => {
-                calcuuube_gui.input_text += operation;
+                let operation_chars: Chars = match operation {
+                    "x²" => "^2".chars(),
+                    _ => operation.chars(),
+                };
+                let mut chars_vec: Vec<char> = calcuuube_gui.input_text.chars().collect();
+                for operation_char in operation_chars {
+                    chars_vec.insert(calcuuube_gui.input_text_cursor_position, operation_char);
+                    calcuuube_gui.input_text_cursor_position += 1;
+                }
+                calcuuube_gui.input_text = chars_vec.into_iter().collect();
             }
         }
         calculate_result(calcuuube_gui);
@@ -214,9 +254,18 @@ fn calculate_result(calcuuube_gui: &mut CalcuuubeGui) {
     }
 }
 
-fn find_fit_text(ui: &mut egui::Ui, input_string: &str, font_family: egui::FontFamily, max_font_size: i32, target_width: f32) -> f32 {
+fn find_fit_text(
+    ui: &mut egui::Ui,
+    input_string: &str,
+    font_family: egui::FontFamily,
+    max_font_size: i32,
+    target_width: f32,
+) -> f32 {
     for i in (5..max_font_size).rev() {
-        let font_id = egui::FontId { size: i as f32, family: font_family.clone() };
+        let font_id = egui::FontId {
+            size: i as f32,
+            family: font_family.clone(),
+        };
         let mut total_width = 0.0;
         for char in (input_string.to_owned() + "  ").chars() {
             total_width += ui.fonts(|f| f.glyph_width(&font_id, char));
@@ -260,7 +309,9 @@ fn capture_events(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
     ui.input_mut(|i| {
         for event in &i.events {
             match event {
-                egui::Event::Text(_) => {}
+                egui::Event::Text(t) => {
+                    println!("{}", t);
+                }
                 egui::Event::PointerButton {
                     pos: _,
                     button,
