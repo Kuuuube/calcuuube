@@ -214,7 +214,7 @@ impl eframe::App for CalcuuubeGui {
                     )
                     .show(ui, |ui| {
                         make_button(self, ui, "√");
-                        make_button(self, ui, "%");
+                        make_button(self, ui, "log(");
                         make_button(self, ui, "^");
                         make_button(self, ui, "x²");
                         ui.end_row();
