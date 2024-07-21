@@ -14,10 +14,10 @@ impl Default for CalcuuubeGuiSettings {
     fn default() -> Self {
         Self {
             dark_mode: true,
-            button_font_size: 25.0,
+            button_font_size: 20.0,
             textedit_font_size: 35.0,
 
-            button_font_size_string: "25".to_owned(),
+            button_font_size_string: "20".to_owned(),
             textedit_font_size_string: "35".to_owned(),
         }
     }
