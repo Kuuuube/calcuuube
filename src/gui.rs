@@ -35,6 +35,8 @@ pub struct CalcuuubeGui {
     #[serde(skip)]
     result_text: String,
     #[serde(skip)]
+    calculation_error: bool,
+    #[serde(skip)]
     clicked: bool,
     #[serde(skip)]
     parser_context: kalk::parser::Context,
@@ -48,6 +50,7 @@ impl Default for CalcuuubeGui {
             input_text: "".to_owned(),
             input_text_cursor_position: 0,
             result_text: "".to_owned(),
+            calculation_error: false,
             clicked: false,
             parser_context: kalk::parser::Context::new(),
         }
@@ -118,6 +121,9 @@ impl eframe::App for CalcuuubeGui {
                 });
 
                 ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                    if self.calculation_error {
+                        calculation_error(ui);
+                    }
                     unselectable_warn_if_debug_build(ui);
                 });
             });
@@ -312,8 +318,12 @@ fn calculate_result(calcuuube_gui: &mut CalcuuubeGui) {
         &calcuuube_gui.input_text,
         &mut calcuuube_gui.parser_context,
     );
-    if calculation.is_some() {
-        calcuuube_gui.result_text = calculation.unwrap();
+    match calculation {
+        Some(some) => {
+            calcuuube_gui.result_text = some;
+            calcuuube_gui.calculation_error = false;
+        }
+        None => calcuuube_gui.calculation_error = true,
     }
 }
 
@@ -338,6 +348,17 @@ fn find_fit_text(
         }
     }
     return 1.0;
+}
+
+fn calculation_error(ui: &mut egui::Ui) {
+    ui.add(
+        egui::Label::new(
+            egui::RichText::new("Calculation Error")
+                .small()
+                .color(ui.visuals().error_fg_color),
+        )
+        .selectable(false),
+    );
 }
 
 fn unselectable_warn_if_debug_build(ui: &mut egui::Ui) {
