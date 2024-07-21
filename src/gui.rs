@@ -93,11 +93,15 @@ impl eframe::App for CalcuuubeGui {
                     })
                     .vertical(|mut strip| {
                         strip.cell(|ui| {
+                            let font = egui::FontId {
+                                size: 35.0,
+                                family: egui::FontFamily::Monospace,
+                            };
                             let input_textedit = ui.add(
                                 egui::TextEdit::singleline(&mut self.input_text)
                                     .min_size([0.0, 40.0].into())
                                     .horizontal_align(egui::Align::Max)
-                                    .font(egui::TextStyle::Heading)
+                                    .font(font)
                                     .id("calcuuube_textedit".into())
                                     .vertical_align(egui::Align::Center),
                             );
