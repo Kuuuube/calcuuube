@@ -230,9 +230,9 @@ dependencies = [
 
 [[package]]
 name = "arrayref"
-version = "0.3.7"
+version = "0.3.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6b4930d2cb77ce62f89ee5d5289b4ac049559b1c45539271f5ed4fdc7db34545"
+checksum = "9d151e35f61089500b617991b791fc8bfd237ae50cd5950803758a179b41e67a"
 
 [[package]]
 name = "arrayvec"
@@ -1765,8 +1765,7 @@ dependencies = [
 [[package]]
 name = "kalk"
 version = "3.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "630f0c10329967e889e0853f04a9cd51bd2f8e8a8e0dc9c8680e0575eeab6681"
+source = "git+https://github.com/Kuuuube/kalker#c6f2442e049f2e19348b859716ac081d7ad00a2a"
 dependencies = [
  "lazy_static",
  "rug",
