@@ -19,6 +19,10 @@ fn inject_sqrt_parentheses(equation: &str) -> String {
         } else if current_char == '√' && next_char != '(' && !found_sqrt {
             new_equation_chars.push(current_char);
             new_equation_chars.push('(');
+            if operators.contains(&next_char) {
+                new_equation_chars.push(next_char);
+                i += 1;
+            }
             found_sqrt = true;
         } else if found_sqrt && operators.contains(&current_char) {
             new_equation_chars.push(')');
