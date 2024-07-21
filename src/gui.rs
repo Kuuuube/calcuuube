@@ -181,7 +181,7 @@ impl eframe::App for CalcuuubeGui {
                                     &self.result_text,
                                     egui::FontFamily::Name("Noto".into()),
                                     self.settings.textedit_font_size,
-                                    ui.available_width(),
+                                    ui.available_size_before_wrap().x,
                                 );
                                 ui.add(
                                     egui::Label::new(egui::RichText::new(&self.result_text).font(
