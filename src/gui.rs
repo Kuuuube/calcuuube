@@ -158,6 +158,8 @@ impl eframe::App for CalcuuubeGui {
                                 .show(ui);
 
                             if input_textedit.response.changed() {
+                                self.input_text =
+                                    crate::realtimeprocessor::realtimeprocess(&self.input_text);
                                 calculate_result(self);
                             }
 

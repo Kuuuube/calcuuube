@@ -4,6 +4,7 @@ mod calculate;
 mod font;
 mod gui;
 mod preprocessor;
+mod realtimeprocessor;
 mod tests;
 
 fn main() -> eframe::Result<()> {
