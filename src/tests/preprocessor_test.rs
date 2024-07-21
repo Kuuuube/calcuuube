@@ -14,4 +14,6 @@ pub fn test_preprocessor() {
     assert!(preprocessor("√(2*2)") == "√(2*2)".to_owned());
     assert!(preprocessor("√2*2√2*2") == "√(2)*2√(2)*2".to_owned());
     assert!(preprocessor("√2√2*2") == "√(2)√2*2".to_owned());
+    assert!(preprocessor("√-1") == "√(-1)".to_owned());
+    assert!(preprocessor("√-1*2") == "√(-1)*2".to_owned());
 }
