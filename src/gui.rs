@@ -144,7 +144,7 @@ impl eframe::App for CalcuuubeGui {
                         let textedit_id = "calcuuube_textedit".into();
                         strip.cell(|ui| {
                             let input_textedit = egui::TextEdit::singleline(&mut self.input_text)
-                                .min_size([0.0, 40.0].into())
+                                .min_size([ui.available_width(), 40.0].into())
                                 .horizontal_align(egui::Align::Max)
                                 .font(egui::TextStyle::Name("textedit".into()))
                                 .id(textedit_id)
