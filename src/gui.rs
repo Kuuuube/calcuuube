@@ -20,8 +20,6 @@ pub struct CalcuuubeGui {
     result_text: String,
     #[serde(skip)]
     clicked: bool,
-    #[serde(skip)]
-    parser_context: kalk::parser::Context,
 }
 
 impl Default for CalcuuubeGui {
@@ -32,7 +30,6 @@ impl Default for CalcuuubeGui {
             input_text: "".to_owned(),
             result_text: "".to_owned(),
             clicked: false,
-            parser_context: kalk::parser::Context::new(),
         }
     }
 }
@@ -85,37 +82,52 @@ impl eframe::App for CalcuuubeGui {
 
         egui::CentralPanel::default().show(ctx, |ui| {
             ui.vertical(|ui| {
-                egui_extras::StripBuilder::new(ui).size(egui_extras::Size::Absolute {
-                    initial: 40.0,
-                    range: (40.0..=40.0).into(),
-                }).size(egui_extras::Size::Absolute {
-                    initial: 40.0,
-                    range: (80.0..=80.0).into(),
-                }).vertical(|mut strip| {
-                    strip.cell(|ui| {
-                        let input_textedit = ui.add(
-                            egui::TextEdit::singleline(&mut self.input_text)
-                                .min_size([0.0, 40.0].into())
-                                .horizontal_align(egui::Align::Max)
-                                .font(egui::TextStyle::Heading)
-                                .id("calcuuube_textedit".into())
-                                .vertical_align(egui::Align::Center),
-                        );
+                egui_extras::StripBuilder::new(ui)
+                    .size(egui_extras::Size::Absolute {
+                        initial: 40.0,
+                        range: (40.0..=40.0).into(),
+                    })
+                    .size(egui_extras::Size::Absolute {
+                        initial: 40.0,
+                        range: (80.0..=80.0).into(),
+                    })
+                    .vertical(|mut strip| {
+                        strip.cell(|ui| {
+                            let input_textedit = ui.add(
+                                egui::TextEdit::singleline(&mut self.input_text)
+                                    .min_size([0.0, 40.0].into())
+                                    .horizontal_align(egui::Align::Max)
+                                    .font(egui::TextStyle::Heading)
+                                    .id("calcuuube_textedit".into())
+                                    .vertical_align(egui::Align::Center),
+                            );
 
-                        if input_textedit.changed() {
-                            calculate_result(self);
-                        }
-                    });
+                            if input_textedit.changed() {
+                                calculate_result(self);
+                            }
+                        });
 
-                    strip.cell(|ui| {
-                        ui.with_layout(egui::Layout::top_down(egui::Align::RIGHT), |ui| {
-                            let font_size = find_fit_text(ui, &self.result_text, egui::FontFamily::Monospace, 35, ui.available_width());
-                            ui.add(egui::Label::new(
-                                egui::RichText::new(&self.result_text).font(egui::FontId { size: font_size, family: egui::FontFamily::Monospace }),
-                            ).wrap_mode(egui::TextWrapMode::Truncate));
+                        strip.cell(|ui| {
+                            ui.with_layout(egui::Layout::top_down(egui::Align::RIGHT), |ui| {
+                                let font_size = find_fit_text(
+                                    ui,
+                                    &self.result_text,
+                                    egui::FontFamily::Monospace,
+                                    35,
+                                    ui.available_width(),
+                                );
+                                ui.add(
+                                    egui::Label::new(egui::RichText::new(&self.result_text).font(
+                                        egui::FontId {
+                                            size: font_size,
+                                            family: egui::FontFamily::Monospace,
+                                        },
+                                    ))
+                                    .wrap_mode(egui::TextWrapMode::Truncate),
+                                );
+                            });
                         });
                     });
-                });
 
                 capture_events(self, ui);
 
@@ -198,18 +210,24 @@ fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &
 }
 
 fn calculate_result(calcuuube_gui: &mut CalcuuubeGui) {
-    let calculation = crate::calculate::calculate_string_to_string(
-        &calcuuube_gui.input_text,
-        &mut calcuuube_gui.parser_context,
-    );
+    let calculation = crate::calculate::calculate_string_to_string(&calcuuube_gui.input_text);
     if calculation.is_some() {
         calcuuube_gui.result_text = calculation.unwrap();
     }
 }
 
-fn find_fit_text(ui: &mut egui::Ui, input_string: &str, font_family: egui::FontFamily, max_font_size: i32, target_width: f32) -> f32 {
+fn find_fit_text(
+    ui: &mut egui::Ui,
+    input_string: &str,
+    font_family: egui::FontFamily,
+    max_font_size: i32,
+    target_width: f32,
+) -> f32 {
     for i in (5..max_font_size).rev() {
-        let font_id = egui::FontId { size: i as f32, family: font_family.clone() };
+        let font_id = egui::FontId {
+            size: i as f32,
+            family: font_family.clone(),
+        };
         let mut total_width = 0.0;
         for char in (input_string.to_owned() + "  ").chars() {
             total_width += ui.fonts(|f| f.glyph_width(&font_id, char));
