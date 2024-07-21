@@ -290,6 +290,7 @@ fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &
             _ => {
                 let operation_chars: Chars = match operation {
                     "x²" => "^2".chars(),
+                    "log(" => "log₁₀(".chars(),
                     _ => operation.chars(),
                 };
                 let mut chars_vec: Vec<char> = calcuuube_gui.input_text.chars().collect();
