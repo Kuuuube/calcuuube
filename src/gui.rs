@@ -240,6 +240,17 @@ fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &
                 calcuuube_gui.input_text = chars_vec.into_iter().collect();
             }
         }
+
+        let text_edit_id = "calcuuube_textedit".into();
+        if let Some(mut state) = egui::TextEdit::load_state(ui.ctx(), text_edit_id) {
+            let ccursor = egui::text::CCursor::new(calcuuube_gui.input_text_cursor_position);
+            state
+                .cursor
+                .set_char_range(Some(egui::text::CCursorRange::one(ccursor)));
+            state.store(ui.ctx(), text_edit_id);
+            ui.ctx().memory_mut(|mem| mem.request_focus(text_edit_id));
+        }
+
         calculate_result(calcuuube_gui);
     }
 }
