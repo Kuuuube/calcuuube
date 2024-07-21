@@ -26,6 +26,8 @@ pub struct CalcuuubeGui {
     clicked: bool,
     #[serde(skip)]
     parser_context: kalk::parser::Context,
+    #[serde(skip)]
+    textedit_wants_focus: bool,
 }
 
 impl Default for CalcuuubeGui {
@@ -38,6 +40,7 @@ impl Default for CalcuuubeGui {
             result_text: "".to_owned(),
             clicked: false,
             parser_context: kalk::parser::Context::new(),
+            textedit_wants_focus: true,
         }
     }
 }
@@ -116,6 +119,11 @@ impl eframe::App for CalcuuubeGui {
 
                             if input_textedit.response.changed() {
                                 calculate_result(self);
+                            }
+
+                            if self.textedit_wants_focus {
+                                input_textedit.response.request_focus();
+                                self.textedit_wants_focus = false;
                             }
 
                             match input_textedit.cursor_range {
@@ -320,7 +328,9 @@ fn capture_events(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
     ui.input_mut(|i| {
         for event in &i.events {
             match event {
-                egui::Event::Text(_) => {}
+                egui::Event::Text(_) => {
+                    calcuuube_gui.textedit_wants_focus = true;
+                }
                 egui::Event::PointerButton {
                     pos: _,
                     button,
