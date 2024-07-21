@@ -1,12 +1,23 @@
 use crate::preprocessor;
 
-pub fn calculate_string_to_string(input_string: &str) -> Option<String> {
+pub fn calculate_string_to_string(
+    input_string: &str,
+    parser_context: &mut kalk::parser::Context,
+) -> Option<String> {
     if input_string.len() == 0 {
         return Some("".to_string());
     }
+    if input_string.contains("i") {
+        return None;
+    }
 
-    match evalexpr::eval(&preprocessor::preprocessor(input_string)) {
-        Ok(ok) => return Some(ok.to_string()),
-        Err(_) => return None,
-    };
+    let result = kalk::parser::eval(
+        parser_context,
+        &preprocessor::preprocessor(input_string),
+        53,
+    );
+    if result.is_err() {
+        return None;
+    }
+    return Some(result.unwrap()?.to_string_pretty());
 }

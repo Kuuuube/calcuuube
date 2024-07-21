@@ -1,8 +1,8 @@
 pub fn preprocessor(equation: &str) -> String {
-    return replace_sqrt_symbols(inject_sqrt_parentheses(equation.to_string()));
+    return inject_sqrt_parentheses(equation);
 }
 
-fn inject_sqrt_parentheses(equation: String) -> String {
+fn inject_sqrt_parentheses(equation: &str) -> String {
     let equation_chars: Vec<char> = equation.chars().collect();
     let mut new_equation_chars: Vec<char> = Default::default();
     let mut found_sqrt = false;
@@ -33,8 +33,4 @@ fn inject_sqrt_parentheses(equation: String) -> String {
         new_equation_chars.push(')');
     }
     return new_equation_chars.into_iter().collect();
-}
-
-fn replace_sqrt_symbols(equation: String) -> String {
-    return equation.replace("√", "math::sqrt");
 }
