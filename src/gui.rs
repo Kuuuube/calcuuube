@@ -5,6 +5,9 @@ pub struct CalcuuubeGuiSettings {
     pub dark_mode: bool,
     pub button_font_size: f32,
     pub textedit_font_size: f32,
+
+    button_font_size_string: String,
+    textedit_font_size_string: String,
 }
 
 impl Default for CalcuuubeGuiSettings {
@@ -13,6 +16,9 @@ impl Default for CalcuuubeGuiSettings {
             dark_mode: true,
             button_font_size: 25.0,
             textedit_font_size: 35.0,
+
+            button_font_size_string: "25".to_owned(),
+            textedit_font_size_string: "35".to_owned(),
         }
     }
 }
@@ -85,6 +91,26 @@ impl eframe::App for CalcuuubeGui {
                 ui.menu_button("Settings", |ui| {
                     light_dark_buttons(self, ui);
 
+                    ui.add(egui::Label::new("Textedit Font Size:").selectable(false));
+                    let response = ui.add(
+                        egui::TextEdit::singleline(&mut self.settings.textedit_font_size_string)
+                            .id("textedit_font".into()),
+                    );
+                    if response.changed() {
+                        set_font_size(&mut self.settings);
+                    }
+                    ui.end_row();
+
+                    ui.add(egui::Label::new("Button Font Size:").selectable(false));
+                    let response = ui.add(
+                        egui::TextEdit::singleline(&mut self.settings.button_font_size_string)
+                            .id("button_font".into()),
+                    );
+                    if response.changed() {
+                        set_font_size(&mut self.settings);
+                    }
+                    ui.end_row();
+
                     if ui.button("Reset").clicked() {
                         self.settings = CalcuuubeGuiSettings::default();
                         ui.close_menu();
@@ -115,12 +141,13 @@ impl eframe::App for CalcuuubeGui {
                         range: (vertical_space_required..=vertical_space_required).into(),
                     })
                     .vertical(|mut strip| {
+                        let textedit_id = "calcuuube_textedit".into();
                         strip.cell(|ui| {
                             let input_textedit = egui::TextEdit::singleline(&mut self.input_text)
                                 .min_size([0.0, 40.0].into())
                                 .horizontal_align(egui::Align::Max)
                                 .font(egui::TextStyle::Name("textedit".into()))
-                                .id("calcuuube_textedit".into())
+                                .id(textedit_id)
                                 .vertical_align(egui::Align::Center)
                                 .show(ui);
 
@@ -128,7 +155,16 @@ impl eframe::App for CalcuuubeGui {
                                 calculate_result(self);
                             }
 
-                            input_textedit.response.request_focus();
+                            let allowed_focus_ids: Vec<egui::Id> =
+                                vec!["textedit_font".into(), "button_font".into()];
+                            ui.ctx().memory_mut(|mem| {
+                                for allowed_id in allowed_focus_ids {
+                                    if mem.has_focus(allowed_id) {
+                                        return;
+                                    }
+                                }
+                                mem.request_focus(textedit_id);
+                            });
 
                             match input_textedit.cursor_range {
                                 Some(some) => {
@@ -362,4 +398,24 @@ fn capture_events(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
             }
         }
     });
+}
+
+fn set_font_size(settings: &mut CalcuuubeGuiSettings) {
+    match settings.textedit_font_size_string.parse::<f32>() {
+        Ok(ok) => {
+            if ok > 0.0 {
+                settings.textedit_font_size = ok
+            }
+        }
+        Err(_) => {}
+    };
+
+    match settings.button_font_size_string.parse::<f32>() {
+        Ok(ok) => {
+            if ok > 0.0 {
+                settings.button_font_size = ok
+            }
+        }
+        Err(_) => {}
+    };
 }
