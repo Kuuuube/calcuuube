@@ -228,7 +228,9 @@ fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &
                     }
                 }
             }
-            "=" => {}
+            "=" => {
+                calcuuube_gui.input_text = calcuuube_gui.result_text.clone();
+            }
             _ => {
                 let operation_chars: Chars = match operation {
                     "x²" => "^2".chars(),
@@ -323,6 +325,11 @@ fn capture_events(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
         for event in &i.events {
             match event {
                 egui::Event::Text(_) => {}
+                egui::Event::Key { key, physical_key: _, pressed, repeat: _, modifiers: _ } => {
+                    if *pressed && key == &egui::Key::from_name("Enter").unwrap() {
+                        calcuuube_gui.input_text = calcuuube_gui.result_text.clone();
+                    }
+                }
                 egui::Event::PointerButton {
                     pos: _,
                     button,
