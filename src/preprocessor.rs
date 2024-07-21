@@ -1,8 +1,8 @@
 pub fn preprocessor(equation: &str) -> String {
-    return inject_sqrt_parentheses(equation);
+    return inject_ending_parentheses(inject_sqrt_parentheses(equation.to_string()));
 }
 
-fn inject_sqrt_parentheses(equation: &str) -> String {
+fn inject_sqrt_parentheses(equation: String) -> String {
     let equation_chars: Vec<char> = equation.chars().collect();
     let mut new_equation_chars: Vec<char> = Default::default();
     let mut found_sqrt = false;
@@ -37,4 +37,21 @@ fn inject_sqrt_parentheses(equation: &str) -> String {
         new_equation_chars.push(')');
     }
     return new_equation_chars.into_iter().collect();
+}
+
+fn inject_ending_parentheses(equation: String) -> String {
+    let mut equation_chars: Vec<char> = equation.chars().collect();
+    let mut parentheses = 0;
+    for equation_char in &equation_chars {
+        if equation_char == &'(' {
+            parentheses += 1;
+        } else if equation_char == &')' {
+            parentheses -= 1;
+        }
+    }
+    for _ in 0..parentheses {
+        equation_chars.push(')');
+    }
+
+    return equation_chars.into_iter().collect();
 }
