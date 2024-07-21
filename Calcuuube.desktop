@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Calcuuube
+Comment=
+Exec=calcuuube
+Icon=calc
+Path=
+Terminal=false
+StartupNotify=false
