@@ -309,9 +309,7 @@ fn capture_events(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
     ui.input_mut(|i| {
         for event in &i.events {
             match event {
-                egui::Event::Text(t) => {
-                    println!("{}", t);
-                }
+                egui::Event::Text(_) => {}
                 egui::Event::PointerButton {
                     pos: _,
                     button,
