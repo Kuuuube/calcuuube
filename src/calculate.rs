@@ -7,9 +7,6 @@ pub fn calculate_string_to_string(
     if input_string.len() == 0 {
         return Some("".to_string());
     }
-    if input_string.contains("i") {
-        return None;
-    }
 
     let result = kalk::parser::eval(
         parser_context,
