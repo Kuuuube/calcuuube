@@ -1,6 +1,7 @@
 #![windows_subsystem = "windows"]
 
 mod calculate;
+mod font;
 mod gui;
 mod preprocessor;
 mod tests;

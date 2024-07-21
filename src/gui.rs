@@ -3,11 +3,17 @@ use std::str::Chars;
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
 pub struct CalcuuubeGuiSettings {
     pub dark_mode: bool,
+    pub button_font_size: f32,
+    pub textedit_font_size: f32,
 }
 
 impl Default for CalcuuubeGuiSettings {
     fn default() -> Self {
-        Self { dark_mode: true }
+        Self {
+            dark_mode: true,
+            button_font_size: 25.0,
+            textedit_font_size: 35.0,
+        }
     }
 }
 
@@ -44,6 +50,8 @@ impl Default for CalcuuubeGui {
 
 impl CalcuuubeGui {
     pub fn new(cc: &eframe::CreationContext<'_>) -> Self {
+        crate::font::add_font_files(cc);
+
         //restore state
         if let Some(storage) = cc.storage {
             return eframe::get_value(storage, eframe::APP_KEY).unwrap_or_default();
@@ -61,6 +69,7 @@ impl eframe::App for CalcuuubeGui {
 
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         set_theme(ctx, self.settings.dark_mode);
+        crate::font::set_font_styles(&mut self.settings, ctx);
 
         egui::TopBottomPanel::top("top_panel").show(ctx, |ui| {
             egui::menu::bar(ui, |ui| {
@@ -89,30 +98,31 @@ impl eframe::App for CalcuuubeGui {
         });
 
         egui::CentralPanel::default().show(ctx, |ui| {
+            let textedit_font_id = egui::FontId {
+                size: self.settings.textedit_font_size,
+                family: egui::FontFamily::Name("Noto".into()),
+            };
+            let vertical_space_required = ui.fonts(|f| f.row_height(&textedit_font_id));
+
             ui.vertical(|ui| {
                 egui_extras::StripBuilder::new(ui)
                     .size(egui_extras::Size::Absolute {
-                        initial: 40.0,
-                        range: (40.0..=40.0).into(),
+                        initial: vertical_space_required,
+                        range: (vertical_space_required..=vertical_space_required).into(),
                     })
                     .size(egui_extras::Size::Absolute {
-                        initial: 40.0,
-                        range: (80.0..=80.0).into(),
+                        initial: vertical_space_required,
+                        range: (vertical_space_required..=vertical_space_required).into(),
                     })
                     .vertical(|mut strip| {
                         strip.cell(|ui| {
-                            let font = egui::FontId {
-                                size: 35.0,
-                                family: egui::FontFamily::Monospace,
-                            };
-                            let input_textedit =
-                                egui::TextEdit::singleline(&mut self.input_text)
-                                    .min_size([0.0, 40.0].into())
-                                    .horizontal_align(egui::Align::Max)
-                                    .font(font)
-                                    .id("calcuuube_textedit".into())
-                                    .vertical_align(egui::Align::Center)
-                                    .show(ui);
+                            let input_textedit = egui::TextEdit::singleline(&mut self.input_text)
+                                .min_size([0.0, 40.0].into())
+                                .horizontal_align(egui::Align::Max)
+                                .font(egui::TextStyle::Name("textedit".into()))
+                                .id("calcuuube_textedit".into())
+                                .vertical_align(egui::Align::Center)
+                                .show(ui);
 
                             if input_textedit.response.changed() {
                                 calculate_result(self);
@@ -122,8 +132,7 @@ impl eframe::App for CalcuuubeGui {
 
                             match input_textedit.cursor_range {
                                 Some(some) => {
-                                    self.input_text_cursor_position =
-                                        some.primary.ccursor.index;
+                                    self.input_text_cursor_position = some.primary.ccursor.index;
                                 }
                                 None => (),
                             }
@@ -134,15 +143,15 @@ impl eframe::App for CalcuuubeGui {
                                 let font_size = find_fit_text(
                                     ui,
                                     &self.result_text,
-                                    egui::FontFamily::Monospace,
-                                    35,
+                                    egui::FontFamily::Name("Noto".into()),
+                                    self.settings.textedit_font_size,
                                     ui.available_width(),
                                 );
                                 ui.add(
                                     egui::Label::new(egui::RichText::new(&self.result_text).font(
                                         egui::FontId {
                                             size: font_size,
-                                            family: egui::FontFamily::Monospace,
+                                            family: textedit_font_id.family,
                                         },
                                     ))
                                     .wrap_mode(egui::TextWrapMode::Truncate),
@@ -207,7 +216,10 @@ impl eframe::App for CalcuuubeGui {
 fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &str) {
     let new_button = ui.add_sized(
         ui.available_size(),
-        egui::Button::new(egui::RichText::new(operation)),
+        egui::Button::new(egui::RichText::new(operation).font(egui::FontId {
+            size: calcuuube_gui.settings.button_font_size,
+            family: egui::FontFamily::Name("Noto".into()),
+        })),
     );
 
     if calcuuube_gui.clicked && new_button.is_pointer_button_down_on() {
@@ -273,10 +285,10 @@ fn find_fit_text(
     ui: &mut egui::Ui,
     input_string: &str,
     font_family: egui::FontFamily,
-    max_font_size: i32,
+    max_font_size: f32,
     target_width: f32,
 ) -> f32 {
-    for i in (5..max_font_size).rev() {
+    for i in (5..max_font_size as i64).rev() {
         let font_id = egui::FontId {
             size: i as f32,
             family: font_family.clone(),
@@ -325,7 +337,13 @@ fn capture_events(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
         for event in &i.events {
             match event {
                 egui::Event::Text(_) => {}
-                egui::Event::Key { key, physical_key: _, pressed, repeat: _, modifiers: _ } => {
+                egui::Event::Key {
+                    key,
+                    physical_key: _,
+                    pressed,
+                    repeat: _,
+                    modifiers: _,
+                } => {
                     if *pressed && key == &egui::Key::from_name("Enter").unwrap() {
                         calcuuube_gui.input_text = calcuuube_gui.result_text.clone();
                     }
