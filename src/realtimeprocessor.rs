@@ -1,5 +1,5 @@
 pub fn realtimeprocess(equation: &str) -> String {
-    return log_subscript(equation.to_string());
+    return loge_to_ln(log_subscript(equation.to_string()));
 }
 
 fn log_subscript(equation: String) -> String {
@@ -45,4 +45,8 @@ fn char_to_subscript(char: char) -> char {
         '9' => '₉',
         _ => char,
     };
+}
+
+fn loge_to_ln(equation: String) -> String {
+    return equation.replace("loge", "ln").replace("logₑ", "ln");
 }

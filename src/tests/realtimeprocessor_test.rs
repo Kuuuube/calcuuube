@@ -15,4 +15,8 @@ pub fn test_realtimeprocessor_log_subscript() {
     assert!(realtimeprocess("log(2") == "log(2".to_owned());
     assert!(realtimeprocess("log(10)") == "log(10)".to_owned());
     assert!(realtimeprocess("log(2)") == "log(2)".to_owned());
+    assert!(realtimeprocess("loge") == "ln".to_owned());
+    assert!(realtimeprocess("logₑ") == "ln".to_owned());
+    assert!(realtimeprocess("loge(") == "ln(".to_owned());
+    assert!(realtimeprocess("logₑ(") == "ln(".to_owned());
 }
