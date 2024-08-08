@@ -302,17 +302,21 @@ fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &
             }
         }
 
-        let text_edit_id = "calcuuube_textedit".into();
-        if let Some(mut state) = egui::TextEdit::load_state(ui.ctx(), text_edit_id) {
-            let ccursor = egui::text::CCursor::new(calcuuube_gui.input_text_cursor_position);
-            state
-                .cursor
-                .set_char_range(Some(egui::text::CCursorRange::one(ccursor)));
-            state.store(ui.ctx(), text_edit_id);
-            ui.ctx().memory_mut(|mem| mem.request_focus(text_edit_id));
-        }
+        set_textedit_cursor_position(ui, calcuuube_gui);
 
         calculate_result(calcuuube_gui);
+    }
+}
+
+fn set_textedit_cursor_position(ui: &mut egui::Ui, calcuuube_gui: &mut CalcuuubeGui) {
+    let text_edit_id = "calcuuube_textedit".into();
+    if let Some(mut state) = egui::TextEdit::load_state(ui.ctx(), text_edit_id) {
+        let ccursor = egui::text::CCursor::new(calcuuube_gui.input_text_cursor_position);
+        state
+            .cursor
+            .set_char_range(Some(egui::text::CCursorRange::one(ccursor)));
+        state.store(ui.ctx(), text_edit_id);
+        ui.ctx().memory_mut(|mem| mem.request_focus(text_edit_id));
     }
 }
 
@@ -393,6 +397,8 @@ fn set_theme(ctx: &egui::Context, dark_mode: bool) {
 }
 
 fn capture_events(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
+    let mut reset_cursor_position = false;
+
     ui.input_mut(|i| {
         for event in &i.events {
             match event {
@@ -406,6 +412,8 @@ fn capture_events(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
                 } => {
                     if *pressed && key == &egui::Key::from_name("Enter").unwrap() {
                         calcuuube_gui.input_text = calcuuube_gui.result_text.clone();
+                        calcuuube_gui.input_text_cursor_position = calcuuube_gui.input_text.len();
+                        reset_cursor_position = true;
                     }
                 }
                 egui::Event::PointerButton {
@@ -422,6 +430,10 @@ fn capture_events(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui) {
             }
         }
     });
+
+    if reset_cursor_position {
+        set_textedit_cursor_position(ui, calcuuube_gui);
+    }
 }
 
 fn set_font_size(settings: &mut CalcuuubeGuiSettings) {
