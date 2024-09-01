@@ -286,6 +286,7 @@ fn make_button(calcuuube_gui: &mut CalcuuubeGui, ui: &mut egui::Ui, operation: &
             }
             "=" => {
                 calcuuube_gui.input_text = calcuuube_gui.result_text.clone();
+                calcuuube_gui.input_text_cursor_position = calcuuube_gui.input_text.len();
             }
             _ => {
                 let operation_chars: Chars = match operation {
