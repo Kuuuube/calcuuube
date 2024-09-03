@@ -8,13 +8,12 @@ pub fn calculate_string_to_string(
         return Some("".to_string());
     }
 
-    let result = kalk::parser::eval(
+    match kalk::parser::eval(
         parser_context,
         &preprocessor::preprocessor(input_string),
-        53,
-    );
-    if result.is_err() {
-        return None;
+        100,
+    ) {
+        Ok(ok) => Some(ok?.to_string_big().replace(" ", "")),
+        Err(_) => return None,
     }
-    return Some(format!("{}", result.unwrap()?).replace(" ", ""));
 }
