@@ -16,5 +16,5 @@ pub fn calculate_string_to_string(
     if result.is_err() {
         return None;
     }
-    return Some(result.unwrap()?.to_string_clean().replace(" ", ""));
+    return Some(format!("{}", result.unwrap()?).replace(" ", ""));
 }
