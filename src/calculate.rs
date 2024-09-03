@@ -13,7 +13,7 @@ pub fn calculate_string_to_string(
         &preprocessor::preprocessor(input_string),
         100,
     ) {
-        Ok(ok) => Some(ok?.to_string_big().replace(" ", "")),
+        Ok(ok) => Some(ok?.to_string_clean().replace(" ", "")),
         Err(_) => return None,
     }
 }

@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-kalk = { git = "https://github.com/Kuuuube/kalker", rev = "c6f2442e049f2e19348b859716ac081d7ad00a2a" }
+kalk = { git = "https://github.com/Kuuuube/kalker", rev = "3d5098527721aec24ce36c75aa81eeedf0631392" }
 egui = "0.28.1"
 egui_extras = "0.28.1"
 eframe = { version = "0.28.1", features = [ "default_fonts", "glow", "persistence" ] }
