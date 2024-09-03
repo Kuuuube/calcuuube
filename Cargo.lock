@@ -1778,7 +1778,7 @@ dependencies = [
 [[package]]
 name = "kalk"
 version = "3.2.0"
-source = "git+https://github.com/Kuuuube/kalker?rev=3d5098527721aec24ce36c75aa81eeedf0631392#3d5098527721aec24ce36c75aa81eeedf0631392"
+source = "git+https://github.com/Kuuuube/kalker?rev=82e6d0eeb8d7a35cf1009782ed2cc1103e1741b5#82e6d0eeb8d7a35cf1009782ed2cc1103e1741b5"
 dependencies = [
  "lazy_static",
  "rug",

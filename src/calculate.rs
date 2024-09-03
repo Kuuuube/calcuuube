@@ -11,9 +11,9 @@ pub fn calculate_string_to_string(
     match kalk::parser::eval(
         parser_context,
         &preprocessor::preprocessor(input_string),
-        100,
+        1024,
     ) {
-        Ok(ok) => Some(ok?.to_string_clean().replace(" ", "")),
+        Ok(ok) => return Some(ok?.to_string_clean().replace(" ", "")),
         Err(_) => return None,
     }
 }
