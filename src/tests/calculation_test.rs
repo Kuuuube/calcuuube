@@ -14,6 +14,8 @@ pub fn test_calculation_outputs() {
     assert!(calculate_string_to_string("10*1000000000000000000000000000000000000000000000000000", &mut parser_context).unwrap() == "10^52".to_owned());
     assert!(calculate_string_to_string("1234567890", &mut parser_context).unwrap() == "1234567890".to_owned());
     assert!(calculate_string_to_string("0.0000000000000000000000000000000000000000000001/5", &mut parser_context).unwrap() == "0.00000000000000000000000000000000000000000000002".to_owned());
-    assert!(calculate_string_to_string("log₁₀(9)", &mut parser_context).unwrap() == "0.9542425094393249".to_owned()
-    );
+    assert!(calculate_string_to_string("log₁₀(9)", &mut parser_context).unwrap() == "0.9542425094393249".to_owned());
+    assert!(calculate_string_to_string("2.7", &mut parser_context).unwrap() == "2.7".to_owned());
+    assert!(calculate_string_to_string("2.1", &mut parser_context).unwrap() == "2.1".to_owned());
+    assert!(calculate_string_to_string("0.1+0.2", &mut parser_context).unwrap() == "0.3".to_owned());
 }
