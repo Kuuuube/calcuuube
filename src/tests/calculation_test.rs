@@ -18,4 +18,5 @@ pub fn test_calculation_outputs() {
     assert!(calculate_string_to_string("2.7", &mut parser_context).unwrap() == "2.7".to_owned());
     assert!(calculate_string_to_string("2.1", &mut parser_context).unwrap() == "2.1".to_owned());
     assert!(calculate_string_to_string("0.1+0.2", &mut parser_context).unwrap() == "0.3".to_owned());
+    assert!(calculate_string_to_string("0.78125-0.7874016", &mut parser_context).unwrap() == "-0.0061516".to_owned());
 }
