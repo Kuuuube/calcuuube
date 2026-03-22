@@ -1,7 +1,12 @@
 pub fn preprocessor(equation: &str) -> String {
-    return remove_commas(inject_ending_parentheses(inject_sqrt_parentheses(
+    return inject_plain(remove_commas(inject_ending_parentheses(inject_sqrt_parentheses(
         equation.to_string(),
-    )));
+    ))));
+}
+
+// this should always be done last
+fn inject_plain(equation: String) -> String {
+    return format!("@plain_number {equation}");
 }
 
 fn inject_sqrt_parentheses(equation: String) -> String {
