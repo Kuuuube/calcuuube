@@ -1,5 +1,5 @@
 pub fn realtimeprocess(equation: &str) -> String {
-    return loge_to_ln(log_subscript(equation.to_string()));
+    return loge_to_ln(log_subscript(remove_currency_markers(equation.to_string())));
 }
 
 fn log_subscript(equation: String) -> String {
@@ -49,4 +49,51 @@ fn char_to_subscript(char: char) -> char {
 
 fn loge_to_ln(equation: String) -> String {
     return equation.replace("loge", "ln").replace("logₑ", "ln");
+}
+
+fn remove_currency_markers(equation: String) -> String {
+    // https://en.wikipedia.org/wiki/Currency_symbol#List_of_currency_symbols_currently_in_use
+    let currency_markers = [
+        "\u{060B}", // AFGHANI SIGN
+        "\u{0E3F}", // THAI CURRENCY SYMBOL BAHT
+        "\u{20B5}", // CEDI SIGN
+        "\u{00A2}", // CENT SIGN
+        "\u{20A1}", // COLON SIGN
+        "\u{0024}", // DOLLAR SIGN
+        "\u{20AB}", // DONG SIGN
+        "\u{058F}", // ARMENIAN DRAM SIGN
+        "\u{0024}", // DOLLAR SIGN with a suitable font
+        "\u{20AC}", // EURO SIGN
+        "\u{0192}", // LATIN SMALL LETTER F WITH HOOK
+        "\u{20B2}", // GUARANI SIGN
+        "\u{20B4}", // HRYVNIA SIGN
+        "\u{20AD}", // KIP SIGN
+        "\u{20BE}", // LARI SIGN
+        "\u{20BA}", // TURKISH LIRA SIGN
+        "\u{20BC}", // MANAT SIGN
+        "\u{20A6}", // NAIRA SIGN
+        "\u{20B1}", // PESO SIGN
+        "\u{00A3}", // POUND SIGN
+        "\u{FDFC}", // RIAL SIGN
+        "\u{20C1}", // SAUDI RIYAL SIGN
+        "\u{17DB}", // KHMER CURRENCY SYMBOL RIEL
+        "\u{20BD}", // RUBLE SIGN
+        "\u{20B9}", // INDIAN RUPEE SIGN
+        "\u{20A8}", // RUPEE SIGN
+        "\u{20AA}", // NEW SHEQEL SIGN
+        "\u{20C0}", // SOM SIGN
+        "\u{09F3}", // BENGALI RUPEE SIGN
+        "\u{20B8}", // TENGE SIGN
+        "\u{20AE}", // TUGRIK SIGN
+        "\u{20A9}", // WON SIGN
+        "\u{FFE6}", // FULLWIDTH WON SIGN
+        "\u{00A5}", // YEN SIGN
+        "\u{FFE5}", // FULLWIDTH YEN SIGN
+        "\u{00A4}", // CURRENCY SIGN
+    ];
+    let mut new_equation = equation;
+    for currency_marker in currency_markers {
+        new_equation = new_equation.replace(currency_marker, "");
+    }
+    return new_equation;
 }
