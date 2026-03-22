@@ -24,7 +24,12 @@ fn inject_sqrt_parentheses(equation: String) -> String {
             new_equation_chars.push(current_char);
             break;
         } else if current_char == '√' && next_char != '(' && !found_sqrt {
-            new_equation_chars.push(current_char);
+            // fend doesnt like the sqrt symbol, replace it with the text `sqrt`
+            // new_equation_chars.push(current_char);
+            for char in "sqrt".chars() {
+                new_equation_chars.push(char);
+            }
+
             new_equation_chars.push('(');
             if operators.contains(&next_char) {
                 new_equation_chars.push(next_char);
