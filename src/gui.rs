@@ -39,7 +39,7 @@ pub struct CalcuuubeGui {
     #[serde(skip)]
     clicked: bool,
     #[serde(skip)]
-    parser_context: kalk::parser::Context,
+    fend_context: fend_core::Context,
 }
 
 impl Default for CalcuuubeGui {
@@ -52,7 +52,7 @@ impl Default for CalcuuubeGui {
             result_text: "".to_owned(),
             calculation_error: false,
             clicked: false,
-            parser_context: kalk::parser::Context::new(),
+            fend_context: fend_core::Context::new(),
         }
     }
 }
@@ -324,7 +324,7 @@ fn set_textedit_cursor_position(ui: &mut egui::Ui, calcuuube_gui: &mut Calcuuube
 fn calculate_result(calcuuube_gui: &mut CalcuuubeGui) {
     let calculation = crate::calculate::calculate_string_to_string(
         &calcuuube_gui.input_text,
-        &mut calcuuube_gui.parser_context,
+        &mut calcuuube_gui.fend_context,
     );
     match calculation {
         Some(some) => {

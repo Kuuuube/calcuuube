@@ -2,18 +2,19 @@ use crate::preprocessor;
 
 pub fn calculate_string_to_string(
     input_string: &str,
-    parser_context: &mut kalk::parser::Context,
+    parser_context: &mut fend_core::Context,
 ) -> Option<String> {
     if input_string.len() == 0 {
         return Some("".to_string());
     }
 
-    match kalk::parser::eval(
-        parser_context,
+    dbg!(&preprocessor::preprocessor(input_string));
+
+    match fend_core::evaluate(
         &preprocessor::preprocessor(input_string),
-        1024,
+        parser_context,
     ) {
-        Ok(ok) => return Some(ok?.to_string_clean().replace(" ", "")),
+        Ok(ok) => return Some(ok.get_main_result().to_string()),
         Err(_) => return None,
     }
 }
