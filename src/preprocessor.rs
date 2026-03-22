@@ -1,26 +1,40 @@
-pub fn preprocessor(equation: &str) -> String {
-    let processed_equation = subscript_to_normal(remove_commas(inject_ending_parentheses(
-        inject_sqrt_parentheses(equation.to_string()),
-    )));
-    if processed_equation.len() > 0 {
-        return inject_plain(processed_equation);
-    } else {
-        return processed_equation;
+use crate::context::CalculatorContext;
+
+pub fn preprocessor(equation: &str, context: &CalculatorContext) -> String {
+    let processed_equation = match context {
+        CalculatorContext::Kalker(_) => remove_commas(inject_ending_parentheses(
+            inject_sqrt_parentheses(equation.to_string(), context),
+        )),
+        CalculatorContext::Fend(_) => subscript_to_normal(remove_commas(
+            inject_ending_parentheses(inject_sqrt_parentheses(equation.to_string(), context)),
+        )),
+    };
+    match context {
+        CalculatorContext::Fend(context) if processed_equation.len() > 0 => {
+            return inject_plain(processed_equation);
+        }
+        _ => return processed_equation,
     }
 }
 
-// this should always be done last
+// this should always be done last for fend
 fn inject_plain(equation: String) -> String {
     return format!("@plain_number {equation}");
 }
 
-fn inject_sqrt_parentheses(equation: String) -> String {
+fn inject_sqrt_parentheses(equation: String, context: &CalculatorContext) -> String {
     let equation_chars: Vec<char> = equation.chars().collect();
     let mut new_equation_chars: Vec<char> = Default::default();
     let mut found_sqrt = false;
     let mut i = 0;
 
     let operators = ['+', '-', '*', '/', '√', '^'];
+
+    let sqrt_text = match context {
+        CalculatorContext::Kalker(_) => "√",
+        // fend doesnt like the sqrt symbol, replace it with the text `sqrt`
+        CalculatorContext::Fend(_) => "sqrt",
+    };
 
     while i < equation_chars.len() {
         let current_char = equation_chars.get(i).unwrap().to_owned();
@@ -29,9 +43,7 @@ fn inject_sqrt_parentheses(equation: String) -> String {
             new_equation_chars.push(current_char);
             break;
         } else if current_char == '√' && next_char != '(' && !found_sqrt {
-            // fend doesnt like the sqrt symbol, replace it with the text `sqrt`
-            // new_equation_chars.push(current_char);
-            for char in "sqrt".chars() {
+            for char in sqrt_text.chars() {
                 new_equation_chars.push(char);
             }
 
@@ -43,13 +55,13 @@ fn inject_sqrt_parentheses(equation: String) -> String {
             found_sqrt = true;
         } else if current_char == '√' && next_char == '(' {
             // fend doesnt like the sqrt symbol, replace it with the text `sqrt`
-            for char in "sqrt".chars() {
+            for char in sqrt_text.chars() {
                 new_equation_chars.push(char);
             }
         } else if found_sqrt && operators.contains(&current_char) {
             if current_char == '√' {
                 new_equation_chars.push(')');
-                for char in "sqrt".chars() {
+                for char in sqrt_text.chars() {
                     new_equation_chars.push(char);
                 }
                 new_equation_chars.push('(');

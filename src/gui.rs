@@ -1,5 +1,7 @@
 use std::str::Chars;
 
+use crate::context::CalculatorContext;
+
 #[derive(serde::Deserialize, serde::Serialize, PartialEq)]
 pub struct CalcuuubeGuiSettings {
     pub dark_mode: bool,
@@ -39,7 +41,7 @@ pub struct CalcuuubeGui {
     #[serde(skip)]
     clicked: bool,
     #[serde(skip)]
-    fend_context: fend_core::Context,
+    parser_context: CalculatorContext,
 }
 
 impl Default for CalcuuubeGui {
@@ -52,7 +54,7 @@ impl Default for CalcuuubeGui {
             result_text: "".to_owned(),
             calculation_error: false,
             clicked: false,
-            fend_context: fend_core::Context::new(),
+            parser_context: CalculatorContext::Kalker(kalk::parser::Context::new()),
         }
     }
 }
@@ -322,10 +324,9 @@ fn set_textedit_cursor_position(ui: &mut egui::Ui, calcuuube_gui: &mut Calcuuube
 }
 
 fn calculate_result(calcuuube_gui: &mut CalcuuubeGui) {
-    let calculation = crate::calculate::calculate_string_to_string(
-        &calcuuube_gui.input_text,
-        &mut calcuuube_gui.fend_context,
-    );
+    let calculation = calcuuube_gui
+        .parser_context
+        .calculate_string_to_string(&calcuuube_gui.input_text);
     match calculation {
         Some(some) => {
             calcuuube_gui.result_text = some;

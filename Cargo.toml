@@ -1,9 +1,10 @@
 [package]
 name = "calcuuube"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [dependencies]
+kalk = { git = "https://github.com/Kuuuube/kalker", rev = "973262f68e5cf324bd134f0e852084d637168dcf" }
 fend-core = "1.5.8"
 egui = "0.28.1"
 egui_extras = "0.28.1"
