@@ -22,7 +22,6 @@ pub fn test_preprocessor_sqrts() {
 
 #[test]
 pub fn test_preprocessor_ending_parentheses() {
-    dbg!(preprocessor("(2*5"));
     assert!(preprocessor("(2*5") == "@plain_number (2*5)".to_owned());
     assert!(preprocessor("((2*5") == "@plain_number ((2*5))".to_owned());
     assert!(preprocessor("2*5)") == "@plain_number 2*5)".to_owned());
