@@ -1,7 +1,7 @@
 pub fn preprocessor(equation: &str) -> String {
-    return inject_plain(remove_commas(inject_ending_parentheses(inject_sqrt_parentheses(
+    return inject_plain(subscript_to_normal(remove_commas(inject_ending_parentheses(inject_sqrt_parentheses(
         equation.to_string(),
-    ))));
+    )))));
 }
 
 // this should always be done last
@@ -70,4 +70,24 @@ fn inject_ending_parentheses(equation: String) -> String {
 
 fn remove_commas(equation: String) -> String {
     return equation.replace(",", "");
+}
+
+fn subscript_to_normal(equation: String) -> String {
+    let replacements = [
+        ("₀", "0"),
+        ("₁", "1"),
+        ("₂", "2"),
+        ("₃", "3"),
+        ("₄", "4"),
+        ("₅", "5"),
+        ("₆", "6"),
+        ("₇", "7"),
+        ("₈", "8"),
+        ("₉", "9"),
+    ];
+    let mut new_equation = equation;
+    for replacement in replacements {
+        new_equation = new_equation.replace(replacement.0, replacement.1);
+    }
+    return new_equation;
 }
