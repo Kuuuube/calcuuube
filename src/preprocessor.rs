@@ -41,10 +41,23 @@ fn inject_sqrt_parentheses(equation: String) -> String {
                 i += 1;
             }
             found_sqrt = true;
+        } else if current_char == '√' && next_char == '(' {
+            // fend doesnt like the sqrt symbol, replace it with the text `sqrt`
+            for char in "sqrt".chars() {
+                new_equation_chars.push(char);
+            }
         } else if found_sqrt && operators.contains(&current_char) {
-            new_equation_chars.push(')');
-            new_equation_chars.push(current_char);
-            found_sqrt = false;
+            if current_char == '√' {
+                new_equation_chars.push(')');
+                for char in "sqrt".chars() {
+                    new_equation_chars.push(char);
+                }
+                new_equation_chars.push('(');
+            } else {
+                new_equation_chars.push(')');
+                new_equation_chars.push(current_char);
+                found_sqrt = false;
+            }
         } else {
             new_equation_chars.push(current_char);
         }
