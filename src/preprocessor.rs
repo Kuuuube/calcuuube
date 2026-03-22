@@ -1,7 +1,12 @@
 pub fn preprocessor(equation: &str) -> String {
-    return inject_plain(subscript_to_normal(remove_commas(inject_ending_parentheses(inject_sqrt_parentheses(
+    let processed_equation = subscript_to_normal(remove_commas(inject_ending_parentheses(inject_sqrt_parentheses(
         equation.to_string(),
-    )))));
+    ))));
+    if processed_equation.len() > 0 {
+        return inject_plain(processed_equation);
+    } else {
+        return processed_equation;
+    }
 }
 
 // this should always be done last
