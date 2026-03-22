@@ -1,7 +1,7 @@
 pub fn preprocessor(equation: &str) -> String {
-    let processed_equation = subscript_to_normal(remove_commas(inject_ending_parentheses(inject_sqrt_parentheses(
-        equation.to_string(),
-    ))));
+    let processed_equation = subscript_to_normal(remove_commas(inject_ending_parentheses(
+        inject_sqrt_parentheses(equation.to_string()),
+    )));
     if processed_equation.len() > 0 {
         return inject_plain(processed_equation);
     } else {

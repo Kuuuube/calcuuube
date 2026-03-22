@@ -27,5 +27,7 @@ pub fn test_realtimeprocessor_remove_currency_symbols() {
     assert!(realtimeprocess("$1000+$12") == "1000+12".to_owned());
     assert!(realtimeprocess("£££££££££") == "".to_owned());
     assert!(realtimeprocess("123฿₵¢₡$₫֏$€ƒ₲₴₭₾₺₼₦₱£⃁₽₹₨₪⃀₸₮₩￦¥￥¤456") == "123456".to_owned());
-    assert!(realtimeprocess("฿₵¢₡$₫֏$€ƒ₲₴₭₾₺₼ ฿₵¢₡$₫֏$€ƒ₲₴₭₾₺₼ ฿₵¢₡$₫֏$€ƒ₲₴₭₾₺₼") == "  ".to_owned());
+    assert!(
+        realtimeprocess("฿₵¢₡$₫֏$€ƒ₲₴₭₾₺₼ ฿₵¢₡$₫֏$€ƒ₲₴₭₾₺₼ ฿₵¢₡$₫֏$€ƒ₲₴₭₾₺₼") == "  ".to_owned()
+    );
 }

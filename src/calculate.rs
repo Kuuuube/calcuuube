@@ -10,10 +10,7 @@ pub fn calculate_string_to_string(
 
     dbg!(&preprocessor::preprocessor(input_string));
 
-    match fend_core::evaluate(
-        &preprocessor::preprocessor(input_string),
-        parser_context,
-    ) {
+    match fend_core::evaluate(&preprocessor::preprocessor(input_string), parser_context) {
         Ok(ok) => return Some(ok.get_main_result().to_string()),
         Err(_) => return None,
     }
