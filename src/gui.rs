@@ -116,6 +116,7 @@ impl eframe::App for CalcuuubeGui {
                     }
                     ui.end_row();
 
+                    ui.add(egui::Label::new("Calculator Engine:").selectable(false));
                     ui.horizontal(|ui| {
                         let kalker_active = matches!(self.parser_context, CalculatorContext::Kalker(_));
                         let fend_active = matches!(self.parser_context, CalculatorContext::Fend(_));
