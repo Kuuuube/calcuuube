@@ -5,20 +5,6 @@ pub enum CalculatorContext {
     Fend(fend_core::Context),
 }
 
-impl PartialEq for CalculatorContext {
-    fn eq(&self, other: &Self) -> bool {
-        match (self, other) {
-            (Self::Kalker(_), Self::Kalker(_)) => true,
-            (Self::Fend(_), Self::Fend(_)) => true,
-            _ => false,
-        }
-    }
-
-    fn ne(&self, other: &Self) -> bool {
-        !self.eq(other)
-    }
-}
-
 impl CalculatorContext {
     pub fn calculate_string_to_string(&mut self, input_string: &str) -> Option<String> {
         if input_string.len() == 0 {
