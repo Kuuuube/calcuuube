@@ -6,8 +6,8 @@ edition = "2024"
 [dependencies]
 kalk = { git = "https://github.com/Kuuuube/kalker", rev = "973262f68e5cf324bd134f0e852084d637168dcf" }
 fend-core = "1.5.8"
-egui = "0.28.1"
-egui_extras = "0.28.1"
-eframe = { version = "0.28.1", features = [ "default_fonts", "glow", "persistence" ] }
+egui = "0.36.2"
+egui_extras = "0.36.2"
+eframe = { version = "0.36.2", features = [ "default_fonts", "glow", "persistence" ] }
 env_logger = "0.11.3"
 serde = "1.0.203"

@@ -1,27 +1,22 @@
-pub fn set_font_styles(settings: &mut crate::gui::CalcuuubeGuiSettings, ctx: &egui::Context) {
-    let mut style = (*ctx.style()).clone();
-    style.text_styles.insert(
-        egui::TextStyle::Name("textedit".into()),
-        egui::FontId::new(
-            settings.textedit_font_size,
-            egui::FontFamily::Name("Noto".into()),
-        ),
+pub fn get_textedit_font(settings: &crate::gui::CalcuuubeGuiSettings) -> egui::FontId{
+    return egui::FontId::new(
+        settings.textedit_font_size,
+        egui::FontFamily::Name("Noto".into()),
     );
-    style.text_styles.insert(
-        egui::TextStyle::Name("button".into()),
-        egui::FontId::new(
-            settings.button_font_size,
-            egui::FontFamily::Name("Noto".into()),
-        ),
+}
+
+pub fn get_button_font(settings: &crate::gui::CalcuuubeGuiSettings) -> egui::FontId{
+    return egui::FontId::new(
+        settings.button_font_size,
+        egui::FontFamily::Name("Noto".into()),
     );
-    ctx.set_style(style);
 }
 
 pub fn add_font_files(cc: &eframe::CreationContext<'_>) {
     let mut fonts = egui::FontDefinitions::default();
     fonts.font_data.insert(
         "NotoSansMono".into(),
-        egui::FontData::from_owned(get_noto_sans_mono()),
+        egui::FontData::from_owned(get_noto_sans_mono()).into(),
     );
     fonts.families.insert(
         egui::FontFamily::Name("Noto".into()),
