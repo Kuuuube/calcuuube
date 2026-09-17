@@ -116,6 +116,23 @@ impl eframe::App for CalcuuubeGui {
                     }
                     ui.end_row();
 
+                    ui.horizontal(|ui| {
+                        let kalker_active = matches!(self.parser_context, CalculatorContext::Kalker(_));
+                        let fend_active = matches!(self.parser_context, CalculatorContext::Fend(_));
+                        let kalker_button = ui.radio(kalker_active, "Kalker");
+                        let fend_button = ui.radio(fend_active, "Fend");
+
+                        if kalker_button.clicked() && !kalker_active {
+                            self.parser_context = CalculatorContext::Kalker(kalk::parser::Context::new());
+                        }
+
+                        if fend_button.clicked() && !fend_active {
+                            self.parser_context = CalculatorContext::Fend(fend_core::Context::new());
+                        }
+
+                    });
+                    ui.end_row();
+
                     if ui.button("Reset").clicked() {
                         self.settings = CalcuuubeGuiSettings::default();
                         ui.close_menu();
