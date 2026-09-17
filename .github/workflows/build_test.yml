@@ -27,7 +27,7 @@ jobs:
           sudo apt-get install libxcb-render0-dev libxcb-shape0-dev libxcb-xfixes0-dev libxkbcommon-dev libssl-dev
 
       - name: Build
-        run: RUSTFLAGS="--cfg=rustix_use_libc" cargo build --verbose
+        run: cargo build --verbose
 
       - name: Run tests
-        run: RUSTFLAGS="--cfg=rustix_use_libc" cargo test --verbose
+        run: cargo test --verbose

@@ -22,7 +22,7 @@ jobs:
 
       - name: Build
         run: |
-          RUSTFLAGS="--cfg=rustix_use_libc" cargo build --release
+          cargo build --release
           strip target/release/calcuuube
           tar -czvf target/release/calcuuube_${{ github.ref_name }}_linux_x64.tar.gz -C target/release/ calcuuube
 
